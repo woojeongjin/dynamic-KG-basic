@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import numpy as np
 import time
@@ -7,23 +5,10 @@ import datetime
 import random
 import multiprocessing
 import math
-
-
 import torch
 
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
 
-# from projection import *
-
-USE_CUDA = torch.cuda.is_available()
-
-if USE_CUDA:
-    longTensor = torch.cuda.LongTensor
-    floatTensor = torch.cuda.FloatTensor
-
-else:
-    longTensor = torch.LongTensor
-    floatTensor = torch.FloatTensor
 
 def isHit10(triple, tree, cal_embedding, tripleDict, isTail):
     # If isTail == True, evaluate the prediction of tail entity

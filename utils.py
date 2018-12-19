@@ -1,7 +1,6 @@
 import os
 
 
-#####
 class Triple(object):
 	def __init__(self, head, tail, relation):
 		self.s = head
