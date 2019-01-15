@@ -10,39 +10,39 @@ import torch
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
 
 
-def isHit10(triple, tree, cal_embedding, tripleDict, isTail):
-    # If isTail == True, evaluate the prediction of tail entity
-    if isTail == True:
-        k = 0
-        wrongCount = 0
-        while wrongCount < 10:
-            k += 15
-            tail_dist, tail_ind = tree.query(cal_embedding, k=k)
-            for elem in tail_ind[0][k - 15: k]:
-                if triple.t == elem:
-                    return True
-                elif (triple.h, elem, triple.r) in tripleDict:
-                    continue
-                else:
-                    wrongCount += 1
-                    if wrongCount > 9:
-                        return False
-    # If isTail == False, evaluate the prediction of head entity
-    else:
-        k = 0
-        wrongCount = 0
-        while wrongCount < 10:
-            k += 15
-            head_dist, head_ind = tree.query(cal_embedding, k=k)
-            for elem in head_ind[0][k - 15: k]:
-                if triple.h == elem:
-                    return True
-                elif (elem, triple.t, triple.r) in tripleDict:
-                    continue
-                else:
-                    wrongCount += 1
-                    if wrongCount > 9:
-                        return False
+# def isHit10(triple, tree, cal_embedding, tripleDict, isTail):
+#     # If isTail == True, evaluate the prediction of tail entity
+#     if isTail == True:
+#         k = 0
+#         wrongCount = 0
+#         while wrongCount < 10:
+#             k += 15
+#             tail_dist, tail_ind = tree.query(cal_embedding, k=k)
+#             for elem in tail_ind[0][k - 15: k]:
+#                 if triple.t == elem:
+#                     return True
+#                 elif (triple.h, elem, triple.r) in tripleDict:
+#                     continue
+#                 else:
+#                     wrongCount += 1
+#                     if wrongCount > 9:
+#                         return False
+#     # If isTail == False, evaluate the prediction of head entity
+#     else:
+#         k = 0
+#         wrongCount = 0
+#         while wrongCount < 10:
+#             k += 15
+#             head_dist, head_ind = tree.query(cal_embedding, k=k)
+#             for elem in head_ind[0][k - 15: k]:
+#                 if triple.h == elem:
+#                     return True
+#                 elif (elem, triple.t, triple.r) in tripleDict:
+#                     continue
+#                 else:
+#                     wrongCount += 1
+#                     if wrongCount > 9:
+#                         return False
 
 # Find the rank of ground truth tail in the distance array,
 # If (head, num, rel) in tripleDict,
