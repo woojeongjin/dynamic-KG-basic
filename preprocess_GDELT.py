@@ -5,27 +5,27 @@ def preprocess():
     entity_dict = {}
     relation_dict = {}
 
-    fw1 = open("dataset/events.2017.20180710093300/train.txt", "w")
-    fw2 = open("dataset/events.2017.20180710093300/test.txt", "w")
-    fw3 = open("dataset/events.2017.20180710093300/stat.txt", "w")
-    start_time = "2017-01-01"
+    fw1 = open("dataset/GDELT/train.txt", "w")
+    fw2 = open("dataset/GDELT/test.txt", "w")
+    fw3 = open("dataset/GDELT/stat.txt", "w")
+    # start_time = "2017-01-01"
 
     # fw1 = open("dataset/events.2018.20181119132436/train.txt", "w")
     # fw2 = open("dataset/events.2018.20181119132436/test.txt", "w")
     # fw3 = open("dataset/events.2018.20181119132436/stat.txt", "w")
-    # start_time = "2018-01-01"
+    start_time = "201801010000"
 
     count = 0
-    train_test_split = 700000
-    format = "%Y-%m-%d"
-    sub_id = 2
-    ob_id = 8
-    rel_id = 5
-    time_id = 1
+    # train_test_split = 700000
+    format = "%Y%m%d%H%M%S"
+    sub_id = 0
+    ob_id = 1
+    rel_id = 2
+    time_id = 3
 
 
 
-    with open("dataset/events.2017.20180710093300.tsv") as fp:
+    with open("dataset/GDELT_201801.txt") as fp:
     # with open("dataset/events.2018.20181119132436.tsv") as fp:
         for i,line in enumerate(fp):
             # skip first line
@@ -59,9 +59,9 @@ def preprocess():
                 relation_dict[info[rel_id]] = relation_id
 
             delta = datetime.datetime.strptime(info[time_id], format) - datetime.datetime.strptime(start_time, format)
-            timestamp = delta.days * 24
+            timestamp = int(delta.days) * 24 * 60 + int(delta.seconds / 60)
             
-            if timestamp < 4344:
+            if timestamp < 20 * 24 * 60:
                 fw1.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
             else:
                 fw2.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
