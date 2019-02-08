@@ -8,15 +8,11 @@ def preprocess():
     fw1 = open("dataset/GDELT/train.txt", "w")
     fw2 = open("dataset/GDELT/test.txt", "w")
     fw3 = open("dataset/GDELT/stat.txt", "w")
-    # start_time = "2017-01-01"
 
-    # fw1 = open("dataset/events.2018.20181119132436/train.txt", "w")
-    # fw2 = open("dataset/events.2018.20181119132436/test.txt", "w")
-    # fw3 = open("dataset/events.2018.20181119132436/stat.txt", "w")
     start_time = "201801010000"
 
     count = 0
-    # train_test_split = 700000
+
     format = "%Y%m%d%H%M%S"
     sub_id = 0
     ob_id = 1
@@ -26,7 +22,6 @@ def preprocess():
 
 
     with open("dataset/GDELT_201801.txt") as fp:
-    # with open("dataset/events.2018.20181119132436.tsv") as fp:
         for i,line in enumerate(fp):
             # skip first line
             count += 1
