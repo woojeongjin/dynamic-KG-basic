@@ -8,6 +8,7 @@ def preprocess():
     fw1 = open("dataset/GDELT/train.txt", "w")
     fw2 = open("dataset/GDELT/test.txt", "w")
     fw3 = open("dataset/GDELT/stat.txt", "w")
+    fw4 = open("dataset/GDELT/valid.txt", "w")
 
     start_time = "201801010000"
 
@@ -56,8 +57,10 @@ def preprocess():
             delta = datetime.datetime.strptime(info[time_id], format) - datetime.datetime.strptime(start_time, format)
             timestamp = int(delta.days) * 24 * 60 + int(delta.seconds / 60)
             
-            if timestamp < 20 * 24 * 60:
+            if timestamp < 24 * 24 * 60:
                 fw1.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
+            elif timestamp < 27 * 24 * 60:
+                fw4.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
             else:
                 fw2.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
 
@@ -67,6 +70,7 @@ def preprocess():
     fw1.close()
     fw2.close()
     fw3.close()
+    fw4.close()
 
 if __name__ == "__main__":
     preprocess()
