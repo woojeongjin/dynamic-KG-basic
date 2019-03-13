@@ -33,6 +33,12 @@ def load_quadruples(inPath, fileName, fileName2=None):
 
     return np.asarray(quadrupleList), np.asarray(times)
 
+def get_total_number(inPath, fileName):
+    with open(os.path.join(inPath, fileName), 'r') as fr:
+        for line in fr:
+            line_split = line.split()
+            return int(line_split[0]), int(line_split[1])
+
 def load_quadruples(inPath, fileName, fileName2=None):
     with open(os.path.join(inPath, fileName), 'r') as fr:
         quadrupleList = []
@@ -80,12 +86,12 @@ def make_packed_rel_batches(triplets):
 
 train_data, train_times = load_quadruples('','train.txt')
 test_data, test_times = load_quadruples('','test.txt')
-total_data, _ = load_quadruples('', 'train.txt', 'test.txt')
+dev_data, dev_times = load_quadruples('','valid.txt')
+# total_data, _ = load_quadruples('', 'train.txt', 'test.txt')
 
 history_len = 10
+num_e, num_r = get_total_number('', 'stat.txt')
 
-num_e = 12498
-num_r = 260
 s_his = [[[] for _ in range(num_e)] for _ in range(num_r)]
 o_his = [[[] for _ in range(num_e)] for _ in range(num_r)]
 s_history_data = [[] for _ in range(len(train_data))]
@@ -103,12 +109,12 @@ for i, train in enumerate(train_data):
         for rr in range(num_r):
             for ee in range(num_e):
                 if len(s_his_cache[rr][ee]) != 0:
-                    if len(s_his[rr][ee]) >= 10:
+                    if len(s_his[rr][ee]) >= history_len:
                         s_his[rr][ee].pop(0)
                     s_his[rr][ee].append(s_his_cache[rr][ee].copy())
                     s_his_cache[rr][ee]= []
                 if len(o_his_cache[rr][ee]) != 0:
-                    if len(o_his[rr][ee]) >=10:
+                    if len(o_his[rr][ee]) >=history_len:
                         o_his[rr][ee].pop(0)
                     o_his[rr][ee].append(o_his_cache[rr][ee].copy())
                     o_his_cache[rr][ee]=[]
@@ -121,7 +127,7 @@ for i, train in enumerate(train_data):
     o_history_data[i] = o_his[r][o].copy()
     s_his_cache[r][s].append(o)
     o_his_cache[r][o].append(s)
-    print(s_history_data[i])
+    # print(s_history_data[i])
     # print(i)
     # print("hist",s_history_data[i])
     # print(s_his_cache[r][s])
@@ -133,7 +139,45 @@ with open('train_history_sub.txt', 'wb') as fp:
 with open('train_history_ob.txt', 'wb') as fp:
     pickle.dump(o_history_data, fp)
 
-print(s_history_data[0])
+# print(s_history_data[0])
+s_history_data_dev = [[] for _ in range(len(dev_data))]
+o_history_data_dev = [[] for _ in range(len(dev_data))]
+    
+for i, dev in enumerate(dev_data):
+    if i % 10000 ==0:
+        print("test",i, len(dev_data))
+    t = dev[3]
+    if latest_t != t:
+        for rr in range(num_r):
+            for ee in range(num_e):
+                if len(s_his_cache[rr][ee]) != 0:
+                    if len(s_his[rr][ee]) >= history_len:
+                        s_his[rr][ee].pop(0)
+                    s_his[rr][ee].append(s_his_cache[rr][ee].copy())
+                    s_his_cache[rr][ee]= []
+                if len(o_his_cache[rr][ee]) != 0:
+                    if len(o_his[rr][ee]) >=history_len:
+                        o_his[rr][ee].pop(0)
+                    o_his[rr][ee].append(o_his_cache[rr][ee].copy())
+                    o_his_cache[rr][ee]=[]
+        latest_t = t
+    s = dev[0]
+    r = dev[1]
+    o = dev[2]
+    s_history_data_dev[i] = s_his[r][s].copy()
+    o_history_data_dev[i] = o_his[r][o].copy()
+    s_his_cache[r][s].append(o)
+    o_his_cache[r][o].append(s)
+
+
+
+with open('dev_history_sub.txt', 'wb') as fp:
+    pickle.dump(s_history_data_dev, fp)
+with open('dev_history_ob.txt', 'wb') as fp:
+    pickle.dump(o_history_data_dev, fp)
+
+
+
 s_history_data_test = [[] for _ in range(len(test_data))]
 o_history_data_test = [[] for _ in range(len(test_data))]
     
@@ -145,12 +189,12 @@ for i, test in enumerate(test_data):
         for rr in range(num_r):
             for ee in range(num_e):
                 if len(s_his_cache[rr][ee]) != 0:
-                    if len(s_his[rr][ee]) >= 10:
+                    if len(s_his[rr][ee]) >= history_len:
                         s_his[rr][ee].pop(0)
                     s_his[rr][ee].append(s_his_cache[rr][ee].copy())
                     s_his_cache[rr][ee]= []
                 if len(o_his_cache[rr][ee]) != 0:
-                    if len(o_his[rr][ee]) >=10:
+                    if len(o_his[rr][ee]) >=history_len:
                         o_his[rr][ee].pop(0)
                     o_his[rr][ee].append(o_his_cache[rr][ee].copy())
                     o_his_cache[rr][ee]=[]
