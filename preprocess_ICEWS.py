@@ -23,11 +23,11 @@ def preprocess():
     ob_id = 8
     rel_id = 5
     time_id = 1
-
+    total_quad =set()
 
 
     # with open("dataset/events.2017.20180710093300.tsv") as fp:
-    with open("dataset/events.2018.20181119132436.tsv") as fp:
+    with open("dataset/events.2018.tsv") as fp:
         for i,line in enumerate(fp):
             # skip first line
             count += 1
@@ -61,6 +61,10 @@ def preprocess():
 
             delta = datetime.datetime.strptime(info[time_id], format) - datetime.datetime.strptime(start_time, format)
             timestamp = delta.days * 24
+            if (entity1_id, relation_id, entity2_id, timestamp) in total_quad:
+                continue
+            else:
+                total_quad.add((entity1_id, relation_id, entity2_id, timestamp))
             
             if timestamp < 24*30*8:
                 fw1.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))

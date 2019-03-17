@@ -19,7 +19,7 @@ def preprocess():
     ob_id = 1
     rel_id = 2
     time_id = 3
-
+    total_quad =set()
 
 
     with open("dataset/GDELT_201801.txt") as fp:
@@ -56,6 +56,11 @@ def preprocess():
 
             delta = datetime.datetime.strptime(info[time_id], format) - datetime.datetime.strptime(start_time, format)
             timestamp = int(delta.days) * 24 * 60 + int(delta.seconds / 60)
+
+            if (entity1_id, relation_id, entity2_id, timestamp) in total_quad:
+                continue
+            else:
+                total_quad.add((entity1_id, relation_id, entity2_id, timestamp))
             
             if timestamp < 24 * 24 * 60:
                 fw1.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
