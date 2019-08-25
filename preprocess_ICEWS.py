@@ -14,6 +14,9 @@ def preprocess():
     fw2 = open("dataset/ICEWS18/test.txt", "w")
     fw3 = open("dataset/ICEWS18/stat.txt", "w")
     fw4 = open("dataset/ICEWS18/valid.txt", "w")
+
+    entity_fw = open("dataset/ICEWS18/entity2id.txt", "w")
+    relation_fw = open("dataset/ICEWS18/relation2id.txt", "w")
     start_time = "2018-01-01"
 
     count = 0
@@ -74,12 +77,20 @@ def preprocess():
                 fw2.write("%-5d\t%-5d\t%-3d\t%-3d\t0\n" % (entity1_id, relation_id, entity2_id, timestamp))
 
     print(count)
+    for ent in entity_dict.keys():
+        entity_fw.write("%s\t%d\n" % (ent, entity_dict[ent]))
+
+    for rel in relation_dict.keys():
+        relation_fw.write("%s\t%d\n" % (rel, relation_dict[rel]))
+
 
     fw3.write(str(len(entity_dict)) + "\t" + str(len(relation_dict))+"\t0")
     fw1.close()
     fw2.close()
     fw3.close()
     fw4.close()
+    entity_fw.close()
+    relation_fw.close()
 
 if __name__ == "__main__":
     preprocess()
